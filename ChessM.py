@@ -1,3 +1,4 @@
+from pygame.constants import K_z
 import ChessE
 import pygame as p
 
@@ -28,9 +29,14 @@ def main():
     screen = p.display.set_mode((width,height))
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
-    gs = ChessE.GameState()
-    load_images()
     
+    gs = ChessE.GameState()
+    
+    # Want our engine to track the valid moves can take
+    validmoves = gs.getvalidmoves()
+    movemade = False 
+    
+    load_images()
     running = True
 
     #Keeps track of last click 
@@ -38,6 +44,8 @@ def main():
     
     # Keep track of the clicks 
     playerclicks = []
+
+    
 
     while running:
         for e in p.event.get():
@@ -68,11 +76,24 @@ def main():
                 if len(playerclicks) == 2:
                     move = ChessE.move(playerclicks[0],playerclicks[1],gs.board)
                     print(move.getchessnotation())
-                    gs.makemove(move)
+                    if move in validmoves:
+                        gs.makemove(move)
+                        movemade = True
+
+                
                     
                     #Reset playclicks and selected
                     playerclicks = []
                     sqselected = ()
+            elif e.type == p.KEYDOWN:
+                if e.key == p.K_z:
+                    gs.undomove()
+                    movemade = True
+
+        if movemade:
+            validmoves = gs.getvalidmoves()
+            movemade = False 
+
 
 
         drawGamestate(screen,gs)
