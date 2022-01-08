@@ -16,10 +16,18 @@ class GameState():
         ["--","--","--","--","--","--","--","--"],
         ["--","--","--","--","--","--","--","--"],
         ["--","--","--","--","--","--","--","--"],
-        ["--","--","--","--","--","--","--","--"],
+        ["--","--","--","bp","--","--","--","--"],
         ["wp","wp","wp","wp","wp","wp","wp","wp"],
         ["wR","wN","wB","wQ","wK","wB","wN","wR"]
         ]
+
+        # Create a dictionary that should streamline the moving of pieces 
+        self.movefunctions = {"p": self.getpawnmoves,
+                              "R": self.getrookmoves,
+                              "B": self.getbishopmoves,
+                              "Q": self.getqueenmoves,
+                              "N": self.getknightmoves,
+                              "K": self.getkingmoves  }
 
         self.whitetomove = True
         self.movelog = []
@@ -63,7 +71,7 @@ class GameState():
         
         # Loop over the whole board and scan for pieces 
 
-        moves = [move((6,4),(4,4),self.board)]
+        moves = []
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
 
@@ -73,28 +81,62 @@ class GameState():
 
                 # See if the piece is White or Black and do the following then. 
 
-                if (turn == "w" and self.whitetomove) & (turn == "b" and not self.whitetomove):
+                if (turn == "w" and self.whitetomove) or (turn == "b" and not self.whitetomove):
                     piece = self.board[r][c][1]
+                    self.movefunctions[piece](r,c,moves)
 
-                    # codifing for specific pieces 
-
-                    if piece == "p":
-                        self.getpawnmoves(r,c,moves)
                     
-                    elif piece == "R":
-                        self.getrookmoves(r,c,moves)
 
         return moves  
     
 
     # want to define moves for various pieces 
 
-    def getpawnmoves(r,c,moves):
+
+    # "In Chess the Pawns go first" https://www.youtube.com/watch?v=yhSYEMEEG5c&ab_channel=influenceofdeep
+
+    def getpawnmoves(self,r,c,moves):
+        if self.whitetomove:
+            if self.board[r-1][c] == "--":
+                moves.append(move((r,c),(r-1,c),self.board))
+                if r == 6 and self.board[r-2][c] == "--":
+                    moves.append(move((r,c),(r-2,c),self.board))
+            if c-1 >= 0:
+                if self.board[r-1][c-1][0] == "b":
+                    moves.append(move((r,c),(r-1,c-1),self.board))
+            if c+1 <= 7:
+                if self.board[r-1][c+1][0] == "b":
+                    moves.append(move((r,c),(r-1,c+1),self.board))
+
+        else:
+            if self.board[r+1][c] == "--":
+                moves.append(move((r,c),(r+1,c),self.board))
+                if r == 1 and self.board[r+2][c] == "--":
+                    moves.append(move((r,c),(r+2,c),self.board))
+            if c-1 >= 0:
+                if self.board[r+1][c-1][0] == "w":
+                    moves.append(move((r,c),(r+1,c-1),self.board))
+            if c+1 <= 7:
+                if self.board[r+1][c+1][0] == "w":
+                    moves.append(move((r,c),(r+1,c+1),self.board))
+
+
+
+    def getrookmoves(self, r,c,moves):
         pass
 
-    def getrookmoves(r,c,moves):
+    def getknightmoves(self, r,c,moves):
         pass
+    def getkingmoves(self, r,c,moves):
+        pass
+    
+    def getqueenmoves(self, r,c,moves):
+        pass
+    
 
+    def getbishopmoves(self, r,c,moves):
+        pass
+    
 
 
         
@@ -114,7 +156,7 @@ class move():
         self.piecemoved = board[self.startrow][self.startcol]
         self.piececaptured = board[self.endrow][self.endcol]
         self.moveid = self.startrow * 1000 + self.startcol * 100 + self.endrow * 10 + self.endcol
-        print(self.moveid)
+        
 
     " Overriding = method"
 
