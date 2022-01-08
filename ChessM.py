@@ -1,3 +1,6 @@
+# Following along a Youtube Tutorial 
+
+
 import ChessE
 import pygame as p
 
