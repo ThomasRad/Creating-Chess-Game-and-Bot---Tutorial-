@@ -1,6 +1,3 @@
-# Following along a Youtube Tutorial 
-
-
 import ChessE
 import pygame as p
 
@@ -33,11 +30,51 @@ def main():
     screen.fill(p.Color("white"))
     gs = ChessE.GameState()
     load_images()
+    
     running = True
+
+    #Keeps track of last click 
+    sqselected = ()
+    
+    # Keep track of the clicks 
+    playerclicks = []
+
     while running:
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
+            elif e.type == p.MOUSEBUTTONDOWN:
+                
+                # This gets the location x and y 
+                location = p.mouse.get_pos()
+                col = location[0]//square_size
+                row = location[1]//square_size
+
+                #Check to see if already clicked the same square
+                if sqselected == (row,col):
+
+                    #Unselect it here 
+                    sqselected = ()
+
+                    # Also reset the player clicks too. 
+                    playerclicks = []
+
+                else: 
+                    sqselected = (row,col)
+                    playerclicks.append(sqselected)
+
+                # Telling the system to move the piece 
+
+                if len(playerclicks) == 2:
+                    move = ChessE.move(playerclicks[0],playerclicks[1],gs.board)
+                    print(move.getchessnotation())
+                    gs.makemove(move)
+                    
+                    #Reset playclicks and selected
+                    playerclicks = []
+                    sqselected = ()
+
+
         drawGamestate(screen,gs)
         clock.tick(max_fps)
         p.display.flip()
@@ -51,7 +88,7 @@ def drawGamestate(screen,gs):
 
 
 def drawboard(screen):
-    colors = [p.Color("white"),p.Color('gray')]
+    colors = [p.Color("white"),p.Color('grey')]
     for r in range(dimension):
         for c in range(dimension):
             color = colors[((r+c) % 2)]
