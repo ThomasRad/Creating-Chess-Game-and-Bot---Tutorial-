@@ -1,3 +1,6 @@
+# Following Along a YOuTube Tutoral - The Internet is pretty boss. 
+
+
 """
 
 This Class will be responsible for determining both the state and valid moves for the current state. 
