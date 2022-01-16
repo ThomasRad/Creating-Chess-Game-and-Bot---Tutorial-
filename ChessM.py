@@ -78,13 +78,12 @@ def main():
                     print(move.getchessnotation())
                     if move in validmoves:
                         gs.makemove(move)
-                        movemade = True
-
-                
-                    
-                    #Reset playclicks and selected
-                    playerclicks = []
-                    sqselected = ()
+                        movemade = True   
+                        #Reset playclicks and selected
+                        playerclicks = []
+                        sqselected = ()
+                    else:
+                        playerclicks = [sqselected]
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_z:
                     gs.undomove()

@@ -16,7 +16,7 @@ class GameState():
         ["--","--","--","--","--","--","--","--"],
         ["--","--","--","--","--","--","--","--"],
         ["--","--","--","--","--","--","--","--"],
-        ["--","--","--","bp","--","--","--","--"],
+        ["--","bp","--","--","--","--","--","--"],
         ["wp","wp","wp","wp","wp","wp","wp","wp"],
         ["wR","wN","wB","wQ","wK","wB","wN","wR"]
         ]
@@ -123,19 +123,72 @@ class GameState():
 
 
     def getrookmoves(self, r,c,moves):
-        pass
+        directions = ((-1,0),(0,-1),(1,0), (0,1))
+        enemycolor = 'b' if self.whitetomove else 'w'
+        for d in directions:
+            for i in range(1,8):
+                endrow = r + d[0] * i
+                endcol = c + d[1] * i 
+                if 0 <= endrow < 8 and 0 <= endcol < 8:
+                    endpiece = self.board[endrow][endcol]
+                    if endpiece == '--':
+                        moves.append(move((r,c), (endrow,endcol),self.board))
+                    elif endpiece[0] == enemycolor:
+                        moves.append(move((r,c), (endrow,endcol),self.board))
+                        break 
+                    else: 
+                        break
+                else:
+                    break
+
 
     def getknightmoves(self, r,c,moves):
-        pass
+        knightmoves = ((1,2),(1,-2),(-1,2),(-1,-2),(2,1),(2,-1),(-2,1),(-2,-1))
+        allycolor = 'w' if self.whitetomove else 'b'
+        for m in knightmoves:
+            endrow = r + m[0] 
+            endcol = c + m[1]
+            if 0 <= endrow <8 and 0 <= endcol <8:
+                endpiece = self.board[endrow][endcol]
+                if endpiece[0] != allycolor:
+                    moves.append(move((r,c),(endrow,endcol),self.board))
+
     def getkingmoves(self, r,c,moves):
-        pass
+        kingmoves = ((1,0),(1,1),(1,-1),(0,1),(0,-1),(-1,1),(-1,0),(-1,-1))
+        allycolor = 'w' if self.whitetomove else 'b'
+        for i in range(8):
+            endrow = r + kingmoves[i][0]
+            endcol = c + kingmoves[i][1]
+            if 0 <= endrow < 8 and 0 <= endcol <8:
+                endpiece = self.board[endrow][endcol]
+                if endpiece[0] != allycolor:
+                    moves.append(move((r,c),(endrow,endcol),self.board))
     
     def getqueenmoves(self, r,c,moves):
-        pass
+        self.getbishopmoves(r,c,moves)
+        self.getrookmoves(r,c,moves)
     
 
     def getbishopmoves(self, r,c,moves):
-        pass
+        directions = ((-1,-1),(1,1),(-1,1),(1,-1)) 
+        enemycolor = 'b' if self.whitetomove else 'w'
+        for d in directions:
+            for i in range(1,8):
+                endrow = r + d[0] * i
+                endcol = c + d[1] * i
+                if  0 <= endrow <8 and 0 <= endcol <8:
+                    endpiece = self.board[endrow][endcol]
+                    if endpiece == '--':
+                        moves.append(move((r,c),(endrow,endcol),self.board))
+                    elif endpiece[0] == enemycolor:
+                        moves.append(move((r,c),(endrow,endcol),self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
+
+
     
 
 
